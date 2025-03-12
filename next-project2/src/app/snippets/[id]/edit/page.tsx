@@ -8,9 +8,11 @@ interface SnippetEditProps {
 }
 
 export default async function SnippetEditPage({ params }: SnippetEditProps) {
-  console.log(params, "props");
-  const snippetId = await Number(params?.id);
+  if (!params || !params.id) {
+    notFound(); // Handle cases where params is missing
+  }
 
+  const snippetId =await Number(params.id);
   if (isNaN(snippetId)) {
     notFound();
   }

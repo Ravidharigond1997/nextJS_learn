@@ -6,6 +6,5 @@ interface SnippetEditFormProps {
 }
 
 export default function SnippetEditForm({ snippet }: SnippetEditFormProps) {
-  console.log(snippet, "snippetData");
   return <div>Hello</div>;
 }
