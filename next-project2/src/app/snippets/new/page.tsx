@@ -1,27 +1,12 @@
-"use server";
-import { db } from "@/db";
-import { redirect } from "next/navigation";
+"use client";
+import { createSnippets } from "@/actions";
+import { useFormState } from "react-dom";
 
-export default async function SnippetsCreatePage() {
-  async function createForm(formData: FormData) {
-    "use server";
-    const title = formData.get("title") as string;
-    const code = formData.get("code") as string;
-
-    if (!title || !code) return; // Prevent empty swsubmission
-
-    await db.snippet.create({
-      data: {
-        title,
-        code,
-      },
-    });
-
-    redirect("/");
-  }
+export default function SnippetsCreatePage() {
+  const [formState, action] = useFormState(createSnippets, { message: "" });
 
   return (
-    <form action={createForm}>
+    <form action={action}>
       <h3 className="font-bold m-3">Create a Snippet</h3>
       <div className="flex flex-col gap-4">
         <div className="flex gap-4">
@@ -48,6 +33,11 @@ export default async function SnippetsCreatePage() {
           />
         </div>
 
+        {formState.message ? (
+          <div className="my-2 p-2 bg-red-200 border roudend border-red-400">
+            {formState.message}
+          </div>
+        ) : null}
         <button type="submit" className="rounded p-2 bg-blue-200">
           Create
         </button>
