@@ -1,4 +1,3 @@
-"use server";
 import { db } from "@/db";
 import { notFound } from "next/navigation";
 import SnippetEditForm from "@/components/snippet-edit-form";
@@ -8,11 +7,13 @@ interface SnippetEditProps {
 }
 
 export default async function SnippetEditPage({ params }: SnippetEditProps) {
-  if (!params || !params.id) {
-    notFound(); // Handle cases where params is missing
+  "use server";
+  // Ensure params are available before using them
+  if (!params?.id) {
+    notFound();
   }
 
-  const snippetId =await Number(params.id);
+  const snippetId = Number(params.id);
   if (isNaN(snippetId)) {
     notFound();
   }
@@ -31,3 +32,6 @@ export default async function SnippetEditPage({ params }: SnippetEditProps) {
     </div>
   );
 }
+
+// ✅ Mark the route as dynamic
+export const dynamic = "force-dynamic";
