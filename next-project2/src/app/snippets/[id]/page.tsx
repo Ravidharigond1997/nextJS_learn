@@ -12,26 +12,26 @@ interface sniffitsProps {
 
 export default async function updateSniffet(props: sniffitsProps) {
   await new Promise((r) => setTimeout(r, 2000));
-  const snippeet = await db.snippet.findFirst({
+  const snippet = await db.snippet.findFirst({
     where: {
       id: parseInt(props.params.id),
     },
   });
 
-  if (!snippeet) {
+  if (!snippet) {
     return notFound();
   }
 
-  const deleteSnippetsAction = deleteSnippets.bind(null, snippeet.id);
+  const deleteSnippetsAction = deleteSnippets.bind(null, snippet.id);
   return (
     <div>
       <div className="flex m-4 flex-col items-center">
         <div className="flex justify-between items-center w-full mb-5">
-          <h1 className="text-xl font-bold">{snippeet.title}</h1>
+          <h1 className="text-xl font-bold">{snippet.title}</h1>
           <div className="flex gap-10">
             <Link
               className="p-2 border rounded"
-              href={`/snippets/${snippeet.id}/edit`}
+              href={`/snippets/${snippet.id}/edit`}
             >
               Edit
             </Link>
@@ -41,9 +41,18 @@ export default async function updateSniffet(props: sniffitsProps) {
           </div>
         </div>
         <pre className="p-3 border rounded bg-gray-200 border-gray-200 w-full">
-          <code>{snippeet.code}</code>
+          <code>{snippet.code}</code>
         </pre>
       </div>
     </div>
   );
+}
+
+export async function generateStaticParams() {
+  const snippets = await db.snippet.findMany();
+  return snippets.map((snippet) => {
+    return {
+      id: snippet.id.toString(),
+    };
+  });
 }

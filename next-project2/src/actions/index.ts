@@ -1,6 +1,7 @@
 "use server";
 import { db } from "@/db";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export async function editSnippets(id: number, code: string) {
   await db.snippet.update({
@@ -8,6 +9,7 @@ export async function editSnippets(id: number, code: string) {
     data: { code },
   });
 
+  revalidatePath(`/snippets/${id}`);
   redirect(`/snippets/${id}`); // ✅ Corrected the template string syntax
 }
 
@@ -16,6 +18,7 @@ export async function deleteSnippets(id: number) {
     where: { id },
   });
 
+  revalidatePath("/");
   redirect("/");
 }
 
@@ -39,7 +42,6 @@ export async function createSnippets(
       };
     }
     if (!title || !code) return; // Prevent empty swsubmission
-                                                                   
 
     throw new Error("Failed to save to database");
   } catch (err: unknown) {
@@ -53,5 +55,6 @@ export async function createSnippets(
       };
     }
   }
+  revalidatePath("/");
   redirect("/");
 }
